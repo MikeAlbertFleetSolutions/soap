@@ -54,7 +54,7 @@ defmodule Soap do
   ## Parameters
 
   - `path`: Path for wsdl file.
-  - `type`: Atom that represents the type of path for WSDL file. Can be `:file` or `url`. Default: `:file`.
+  - `type`: Atom that represents the type of path for WSDL file. Can be `:file` or `:url`. Default: `:file`.
 
   ## Examples
 

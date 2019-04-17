@@ -152,7 +152,7 @@ defmodule Soap.Wsdl do
       |> xpath(~x".", name: ~x"./@name"s, soap_action: ~x"./#{ns("operation", soap_ns)}/@soapAction"s)
       |> Map.put(:input, get_operation_input(node, protocol_ns, soap_ns))
     end)
-    |> Enum.reject(fn x -> x[:soap_action] == "" end)
+    # |> Enum.reject(fn x -> x[:soap_action] == "" end)
   end
 
   defp get_operation_input(element, protocol_ns, soap_ns) do
@@ -218,5 +218,6 @@ defmodule Soap.Wsdl do
   defp soap_version(opts) when is_list(opts), do: Keyword.get(opts, :soap_version, soap_version())
 
   defp ns(name, []), do: "#{name}"
-  defp ns(name, namespace), do: "#{namespace}:#{name}"
+  # defp ns(name, namespace), do: "#{namespace}:#{name}"
+  defp ns(name, _namespace), do: "#{name}"
 end
