@@ -20,9 +20,9 @@ defmodule Soap.Request.Params do
   Returns xml-like string.
   """
 
-  @spec build_body(wsdl :: map(), operation :: String.t() | atom(), params :: map(), headers :: map()) :: String.t()
-  def build_body(wsdl, operation, params, headers) do
-    with {:ok, body} <- build_soap_body(wsdl, operation, params),
+  @spec build_body(wsdl :: map(), operation :: String.t() | atom(), params :: map(), attrs :: map(), headers :: map()) :: String.t()
+  def build_body(wsdl, operation, params, attrs, headers) do
+    with {:ok, body} <- build_soap_body(wsdl, operation, params, attrs),
          {:ok, header} <- build_soap_header(wsdl, operation, headers) do
       [header, body]
       |> add_envelope_tag_wrapper(wsdl, operation)
@@ -107,7 +107,7 @@ defmodule Soap.Request.Params do
 
   defp validate_type(k, _v, type = "dateTime"), do: type_error_message(k, type)
 
-  defp build_soap_body(wsdl, operation, params) do
+  defp build_soap_body(wsdl, operation, params, attrs) do
     case params |> construct_xml_request_body |> validate_params(wsdl, operation) do
       {:error, messages} ->
         {:error, messages}
@@ -116,7 +116,7 @@ defmodule Soap.Request.Params do
         body =
           validated_params
           |> add_action_tag_wrapper(wsdl, operation)
-          |> add_body_tag_wrapper
+          |> add_body_tag_wrapper(attrs)
 
         {:ok, body}
     end
@@ -256,8 +256,8 @@ defmodule Soap.Request.Params do
     |> List.first()
   end
 
-  @spec add_body_tag_wrapper(list()) :: list()
-  defp add_body_tag_wrapper(body), do: [element(:"#{env_namespace()}:Body", nil, body)]
+  @spec add_body_tag_wrapper(body :: list(), attrs :: map()) :: list()
+  defp add_body_tag_wrapper(body, attrs), do: [element(:"#{env_namespace()}:Body", attrs, body)]
 
   @spec add_header_tag_wrapper(list()) :: list()
   defp add_header_tag_wrapper(body), do: [element(:"#{env_namespace()}:Header", nil, body)]
