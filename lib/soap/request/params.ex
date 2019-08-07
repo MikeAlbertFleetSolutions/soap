@@ -115,8 +115,8 @@ defmodule Soap.Request.Params do
       validated_params ->
         body =
           validated_params
-          |> add_action_tag_wrapper(wsdl, operation)
-          |> add_body_tag_wrapper(attrs)
+          |> add_action_tag_wrapper(wsdl, operation, attrs)
+          |> add_body_tag_wrapper
 
         {:ok, body}
     end
@@ -184,9 +184,10 @@ defmodule Soap.Request.Params do
   @spec insert_tag_parameters(params :: list()) :: list()
   defp insert_tag_parameters(params) when is_list(params), do: params |> List.insert_at(1, nil)
 
-  @spec add_action_tag_wrapper(list(), map(), String.t()) :: list()
-  defp add_action_tag_wrapper(body, wsdl, operation) do
+  @spec add_action_tag_wrapper(list(), map(), String.t(), map() | nil) :: list()
+  defp add_action_tag_wrapper(body, wsdl, operation, attrs) do
     action_tag_attributes = handle_element_form_default(wsdl[:schema_attributes])
+    |> Map.merge(attrs)
 
     action_tag =
       wsdl
@@ -256,8 +257,8 @@ defmodule Soap.Request.Params do
     |> List.first()
   end
 
-  @spec add_body_tag_wrapper(body :: list(), attrs :: map()) :: list()
-  defp add_body_tag_wrapper(body, attrs), do: [element(:"#{env_namespace()}:Body", attrs, body)]
+  @spec add_body_tag_wrapper(body :: list()) :: list()
+  defp add_body_tag_wrapper(body), do: [element(:"#{env_namespace()}:Body", nil, body)]
 
   @spec add_header_tag_wrapper(list()) :: list()
   defp add_header_tag_wrapper(body), do: [element(:"#{env_namespace()}:Header", nil, body)]
