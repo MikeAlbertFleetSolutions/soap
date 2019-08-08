@@ -86,7 +86,7 @@ defmodule Soap do
       {:ok, %Soap.Response{}}
   """
   @spec call(wsdl :: map(), operation :: String.t(), params :: map(), attrs :: map(), headers :: any(), opts :: any()) :: any()
-  def call(wsdl, operation, params, attrs, headers \\ [], opts \\ []) do
+  def call(wsdl, operation, params, attrs \\ %{}, headers \\ [], opts \\ []) do
     wsdl
     |> validate_operation(operation)
     |> Request.call(operation, params, attrs, headers, opts)

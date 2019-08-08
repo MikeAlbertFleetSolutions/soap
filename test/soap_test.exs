@@ -25,7 +25,7 @@ defmodule SoapTest do
 
     with_mock HTTPoison, post: fn _, _, _, [hackney: ^hackney] -> http_poison_result end do
       soap_response = %Response{status_code: 200, body: response_xml, headers: [], request_url: nil}
-      assert(Soap.call(wsdl, @operation, @request_params, [], hackney: hackney) == {:ok, soap_response})
+      assert(Soap.call(wsdl, @operation, @request_params, %{}, [], hackney: hackney) == {:ok, soap_response})
     end
   end
 

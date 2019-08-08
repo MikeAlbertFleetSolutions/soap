@@ -29,7 +29,7 @@ defmodule Soap.RequestTest do
     http_poison_result = {:ok, %HTTPoison.Response{status_code: 200, body: "Anything"}}
 
     with_mock HTTPoison, post: fn _, _, _, _ -> http_poison_result end do
-      assert(Request.call(wsdl, operation, params) == http_poison_result)
+      assert(Request.call(wsdl, operation, params, %{}) == http_poison_result)
     end
   end
 
@@ -41,7 +41,7 @@ defmodule Soap.RequestTest do
     hackney = [basic_auth: {"user", "pass"}]
 
     with_mock HTTPoison, post: fn _, _, _, [hackney: ^hackney] -> http_poison_result end do
-      assert(Request.call(wsdl, operation, params, [], hackney: hackney) == http_poison_result)
+      assert(Request.call(wsdl, operation, params, %{}, [], hackney: hackney) == http_poison_result)
     end
   end
 
@@ -59,7 +59,7 @@ defmodule Soap.RequestTest do
     params = {%{token: "barbaz"}, %{body: "Hello John"}}
 
     with_mock HTTPoison, post: fn _, body, _, _ -> body end do
-      assert(Request.call(wsdl, operation, params) == @request_with_header)
+      assert(Request.call(wsdl, operation, params, %{}) == @request_with_header)
     end
   end
 end

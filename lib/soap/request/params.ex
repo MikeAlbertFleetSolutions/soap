@@ -186,7 +186,8 @@ defmodule Soap.Request.Params do
 
   @spec add_action_tag_wrapper(list(), map(), String.t(), map() | nil) :: list()
   defp add_action_tag_wrapper(body, wsdl, operation, attrs) do
-    action_tag_attributes = handle_element_form_default(wsdl[:schema_attributes])
+    action_tag_attributes = wsdl[:schema_attributes]
+    |> handle_element_form_default()
     |> Map.merge(attrs)
 
     action_tag =
